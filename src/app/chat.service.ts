@@ -7,7 +7,7 @@ import * as io from 'socket.io-client';
 
 export class ChatService{
 
-  private socket = io('http://localhost:5000');
+  public socket = io('http://localhost:5000');
 
   joinRoom(data)
   {
@@ -56,4 +56,7 @@ export class ChatService{
 
       return observable;
   }
+
+  
+
 }
