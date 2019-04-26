@@ -32,12 +32,12 @@
                     <ul class="message-list">
                         <li class="user-message" *ngFor="let item of messageArray">
                         <span class="user-id"><strong>{{item.user}} : </strong> {{item.message}}</span>
-                        <img *ngIf="message.attachment"
+                        <img *ngIf="item.message.attachment"
                             class="image-attachment"
-                            src="{{ message.attachment.link }}"
-                            alt="{{ message.attachment.name }}"
+                            src="{{ item.message.attachment.link }}"
+                            alt="{{ item.message.attachment.name }}"
                             />
-                            <a *ngFor="let link of message.url_matches" href="{{ link }}"
+                            <a *ngFor="let link of item.message.url_matches" href="{{ link }}"
                             class="link-preview">{{link}}</a>
                         </li>
                     </ul>
