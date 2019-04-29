@@ -1,12 +1,12 @@
 import { Component, AfterViewChecked } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import axios from 'axios';
 import Giphy from 'giphy-api';
 declare const microlink;
 
 import { ChatService } from './chat.service';
 import { WebsocketService } from './websocket.service';
-import { CrudService } from './shared/crud.service';
+//import { CrudService } from './shared/crud.service';
+import { AngularFireDatabase } from '@angular/fire/database';
 
 
 @Component({
@@ -14,7 +14,7 @@ import { CrudService } from './shared/crud.service';
   templateUrl: './app.component.html',
   template: `{{item | async | json}}`,
   styleUrls: ['./app.component.css'],
-  providers: [ChatService, WebsocketService, CrudService]
+  providers: [ChatService, WebsocketService]
 
 })
 export class AppComponent implements AfterViewChecked {
@@ -22,6 +22,8 @@ export class AppComponent implements AfterViewChecked {
     user:String;
     room:String;
     messageText:String;
+    newMessage: string;
+    id: string;
     currentUser: any;
     currentRoom = {};
     messages = [];
@@ -30,7 +32,16 @@ export class AppComponent implements AfterViewChecked {
     giphySearchTerm = '';
     giphyResults = [];
     messageArray:Array<{user:String,message:String}> = [];
-    constructor(private _chatService:ChatService, private _crudService: CrudService){
+
+    public items: any = {
+      id: "",
+      user: "",
+      room: "",
+      message: "" 
+  
+    }
+    
+    constructor(private _chatService:ChatService, db: AngularFireDatabase){
         this._chatService.newUserJoined()
         .subscribe(data=> this.messageArray.push(data));
 
@@ -40,6 +51,8 @@ export class AppComponent implements AfterViewChecked {
 
         this._chatService.newMessageReceived()
         .subscribe(data=>this.messageArray.push(data));
+
+        this.items = db.list('/data');
     }
 
     ngAfterViewChecked() {
@@ -95,10 +108,16 @@ export class AppComponent implements AfterViewChecked {
       this.showEmojiPicker = false;
     }
 
-    sendMessage()
+    updateChat(message: string) {
+      this.items.update( {"id":this.id, "user": this.user, "room": this.room, "message":this.newMessage});
+    }
+
+    sendMessage(updateChat)
     {
         this._chatService.sendMessage({user:this.user, room:this.room, message:this.messageText});
         this.messageText='';
+    
+        updateChat();
     }
 
     addUser() {
@@ -148,5 +167,7 @@ export class AppComponent implements AfterViewChecked {
         // .catch(error => console.error(error))
 
     }
+
+   
   }
 

@@ -68,7 +68,7 @@
                     name="message" [(ngModel)]="messageText">
                     <button type="button" class="toggle-giphy"
                         (click)="toggleGiphySearch()">GIF</button>
-                        <button type="button" class="btn btn-success pull-right" (keyup)="$event.keyCode == sendMessage()" (click)= "updateChat(newMessage.value)">Update</button>
+                        <button type="button" class="btn btn-success pull-right" (keyup)="$event.keyCode == sendMessage()" (click)= "updateChat(newMessage.value)" >Send</button>
                         <!-- <button type="button" class="btn btn-success pull-right" (click)="sendMessage()">Send</button> -->
                     </form>
                 </footer>
