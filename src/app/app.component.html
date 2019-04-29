@@ -37,7 +37,7 @@
                             src="{{ item.message.attachment.link }}"
                             alt="{{ item.message.attachment.name }}"
                             />
-                            <a *ngFor="let link of item.message.url_matches" href="{{ link }}"
+                            <a *ngFor="let link of item.message" href="{{ link }}"
                             class="link-preview">{{link}}</a>
                         </li>
                     </ul>
@@ -68,7 +68,8 @@
                     name="message" [(ngModel)]="messageText">
                     <button type="button" class="toggle-giphy"
                         (click)="toggleGiphySearch()">GIF</button>
-                        <button type="button" class="btn btn-success pull-right" (click)="sendMessage()">Send</button>
+                        <button type="button" class="btn btn-success pull-right" (keyup)="$event.keyCode == sendMessage()" (click)= "updateChat(newMessage.value)">Update</button>
+                        <!-- <button type="button" class="btn btn-success pull-right" (click)="sendMessage()">Send</button> -->
                     </form>
                 </footer>
     </main>

@@ -6,13 +6,15 @@ declare const microlink;
 
 import { ChatService } from './chat.service';
 import { WebsocketService } from './websocket.service';
+import { CrudService } from './shared/crud.service';
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  template: `{{item | async | json}}`,
   styleUrls: ['./app.component.css'],
-  providers: [ChatService, WebsocketService]
+  providers: [ChatService, WebsocketService, CrudService]
 
 })
 export class AppComponent implements AfterViewChecked {
@@ -28,7 +30,7 @@ export class AppComponent implements AfterViewChecked {
     giphySearchTerm = '';
     giphyResults = [];
     messageArray:Array<{user:String,message:String}> = [];
-    constructor(private _chatService:ChatService){
+    constructor(private _chatService:ChatService, private _crudService: CrudService){
         this._chatService.newUserJoined()
         .subscribe(data=> this.messageArray.push(data));
 
@@ -58,8 +60,8 @@ export class AppComponent implements AfterViewChecked {
   sendGif(title, url) {
     const { currentUser } = this;
     currentUser.sendMessage({
-      user: title,
-      message: 'message',
+      text: title,
+      room: String,
       attachment: {
         link: url,
         type: 'image',
@@ -84,9 +86,9 @@ export class AppComponent implements AfterViewChecked {
         this._chatService.leaveRoom({user:this.user, room:this.room});
     }
 
-    microlink
     addEmoji(event) {
       const { messageText } = this;
+      
       const text = `${messageText}${event.emoji.native}`;
 
       this.messageText = text;
@@ -96,6 +98,7 @@ export class AppComponent implements AfterViewChecked {
     sendMessage()
     {
         this._chatService.sendMessage({user:this.user, room:this.room, message:this.messageText});
+        this.messageText='';
     }
 
     addUser() {
