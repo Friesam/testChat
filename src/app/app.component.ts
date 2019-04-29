@@ -8,7 +8,7 @@ declare const microlink;
 import { ChatService } from './chat.service';
 import { WebsocketService } from './websocket.service';
 //import { CrudService } from './shared/crud.service';
-import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -37,8 +37,8 @@ export class AppComponent implements AfterViewChecked {
     giphyResults = [];
     messageArray:Array<{user:String,message:String}> = [];
 
-    itemsRef: AngularFireList<any>;
-    items:Observable<any[]>;
+    itemsRef: AngularFireObject<any>;
+    item:Observable<any[]>;
     // public items: any = {
     //   id: "",
     //   user: "",
@@ -57,13 +57,15 @@ export class AppComponent implements AfterViewChecked {
         this._chatService.newMessageReceived()
         .subscribe(data=>this.messageArray.push(data));
 
-        this.itemsRef = db.list('data');
-        this.items = this.itemsRef.snapshotChanges().pipe(
-          map(changes => 
-            changes.map(c => ({user: c.payload.key, ...c.payload.val()}))
-            )
+        this.itemsRef = db.object('item');
+        this.item = this.itemsRef.valueChanges();
+
+        // this.items = this.itemsRef.snapshotChanges().pipe(
+        //   map(changes => 
+        //     changes.map(c => ({user: c.payload.key, ...c.payload.val()}))
+        //     )
             
-        );
+        // );
         //this.items = db.list('/data');
     }
 
@@ -127,19 +129,25 @@ export class AppComponent implements AfterViewChecked {
     // }
 
     addItem(newName: string){
-      this.itemsRef.push({text: newName});
+      this.itemsRef.set({name: newName});
+      console.log(this.item);
+      alert("successfully saved in realtime");
     }
-    updateItem(user : string, newText: string) {
-      this.itemsRef.update(user, { text: newText });
+    updateItem(updateChat: string) {
+      this.itemsRef.update({ name: updateChat});
+      console.log(this.item);
+      alert("successfully updated in realtime");
     }
 
-    sendMessage(updateChat)
+    sendMessage()
     {
-        // if (this.items.messageText.length >= 0) {
-        //   console.log(" do not send");
-        // }
-        this._chatService.sendMessage({user:this.user, room:this.room, message:this.messageText});
-        this.messageText='';
+        if (this.messageText.length > 0) {
+          this._chatService.sendMessage({user:this.user, room:this.room, message:this.messageText});
+          this.messageText='';
+          console.log(" Sending");
+          
+        }
+       
   
     }
 

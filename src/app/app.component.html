@@ -56,24 +56,24 @@
                     </section>
 
             <footer class="chat-footer"> 
-                <div *ngFor="let item of items | async "></div>
+                    <ul>
+                            <li *ngFor="let item of items | async">
+                               {{ item | json }}
+                            </li>
+                          </ul>
                     <form (ngSubmit)='sendMessage()'>
+                       
                         <button
                             type="button"
                             class="toggle-emoji"
-                            (click)="toggleEmojiPicker()"
-                            >
+                            (click)="toggleEmojiPicker()">
                             <i-smile></i-smile>
                         </button>
-                       
-                               
-           
 
                         <input placeholder="Type a message. Hit Enter to send" 
                         type="text"
                         name="message" 
                         [(ngModel)]="messageText" 
-                        #updateText [value]= "item.text"
                         #newitem
                         >
                    
@@ -87,11 +87,14 @@
                         class="btn btn-success pull-right" 
                         (keyup)="$event.keyCode == sendMessage()" 
                         [disabled]="!messageText"
-                        (click) = "addItem(newitem.value)">
+                        (click) = "addItem(newitem.value)"
+                        #updateChat>
                         Send
                     </button>
+               
                         <!-- <button type="button" class="btn btn-success pull-right" (click)="sendMessage()">Send</button> -->
                     </form>
+                    
                 </footer>
     </main>
     
