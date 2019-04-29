@@ -1,18 +1,22 @@
 import { Component, AfterViewChecked } from '@angular/core';
 import axios from 'axios';
 import Giphy from 'giphy-api';
+;
+
 declare const microlink;
 
 import { ChatService } from './chat.service';
 import { WebsocketService } from './websocket.service';
 //import { CrudService } from './shared/crud.service';
-import { AngularFireDatabase } from '@angular/fire/database';
+import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  template: `{{item | async | json}}`,
+
   styleUrls: ['./app.component.css'],
   providers: [ChatService, WebsocketService]
 
@@ -33,18 +37,19 @@ export class AppComponent implements AfterViewChecked {
     giphyResults = [];
     messageArray:Array<{user:String,message:String}> = [];
 
-    public items: any = {
-      id: "",
-      user: "",
-      room: "",
-      message: "" 
+    itemsRef: AngularFireList<any>;
+    items:Observable<any[]>;
+    // public items: any = {
+    //   id: "",
+    //   user: "",
+    //   room: "",
+    //   message: "" 
   
-    }
+    // }
     
     constructor(private _chatService:ChatService, db: AngularFireDatabase){
         this._chatService.newUserJoined()
         .subscribe(data=> this.messageArray.push(data));
-
 
         this._chatService.userLeftRoom()
         .subscribe(data=>this.messageArray.push(data));
@@ -52,7 +57,14 @@ export class AppComponent implements AfterViewChecked {
         this._chatService.newMessageReceived()
         .subscribe(data=>this.messageArray.push(data));
 
-        this.items = db.list('/data');
+        this.itemsRef = db.list('data');
+        this.items = this.itemsRef.snapshotChanges().pipe(
+          map(changes => 
+            changes.map(c => ({user: c.payload.key, ...c.payload.val()}))
+            )
+            
+        );
+        //this.items = db.list('/data');
     }
 
     ngAfterViewChecked() {
@@ -108,16 +120,27 @@ export class AppComponent implements AfterViewChecked {
       this.showEmojiPicker = false;
     }
 
-    updateChat(message: string) {
-      this.items.update( {"id":this.id, "user": this.user, "room": this.room, "message":this.newMessage});
+    // async updateChat(message: string) {
+    //   this.items.push( {"id":this.items.id, "user": this.items.user, "room": this.items.room, "message":this.items.newMessage});
+    //   console.log(this.items);
+    //   alert("successfully saved in realtime");
+    // }
+
+    addItem(newName: string){
+      this.itemsRef.push({text: newName});
+    }
+    updateItem(user : string, newText: string) {
+      this.itemsRef.update(user, { text: newText });
     }
 
     sendMessage(updateChat)
     {
+        // if (this.items.messageText.length >= 0) {
+        //   console.log(" do not send");
+        // }
         this._chatService.sendMessage({user:this.user, room:this.room, message:this.messageText});
         this.messageText='';
-    
-        updateChat();
+  
     }
 
     addUser() {

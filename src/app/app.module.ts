@@ -5,12 +5,13 @@ import { IconsModule } from './icons/icons.module';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
-import { AngularFireAuthModule} from '@angular/fire/auth';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 
 import { AppComponent } from "./app.component";
 import { ChatService } from "./chat.service";
 import { WebsocketService } from "./websocket.service";
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -18,11 +19,13 @@ import { WebsocketService } from "./websocket.service";
     declarations: [AppComponent],
     imports: [BrowserModule, 
                 FormsModule,
+                HttpClientModule,
                 IconsModule,
                 PickerModule,
                 AngularFireModule.initializeApp(environment.firebaseConfig),
                 AngularFireDatabaseModule,
-                AngularFireAuthModule],
+                AngularFireAuthModule
+            ],
     providers: [ChatService,
                 WebsocketService],
     bootstrap: [AppComponent]
