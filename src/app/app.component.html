@@ -37,8 +37,8 @@
                             src="{{ item.message.attachment.link }}"
                             alt="{{ item.message.attachment.name }}"
                             />
-                            <a *ngFor="let link of item.message" href="{{ link }}"
-                            class="link-preview">{{link}}</a>
+                            <a href="{{ item.message }}"
+                            class="link-preview">{{item.message}}</a>
                         </li>
                     </ul>
                         <emoji-mart class="emoji-mart" set="emojione" (emojiSelect)="addEmoji($event)" *ngIf="showEmojiPicker" title="Pick your emoji…"></emoji-mart>
