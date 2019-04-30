@@ -118,35 +118,22 @@ export class AppComponent implements AfterViewChecked {
       this.showEmojiPicker = false;
     }
 
-    // async updateChat(message: string) {
-    //   this.items.push( {"id":this.items.id, "user": this.items.user, "room": this.items.room, "message":this.items.newMessage});
-    //   console.log(this.items);
-    //   alert("successfully saved in realtime");
-    // }
+    updateChat(): void {
+      this._crudService.updateChat;
+    }
 
-    // addItem(newName: string){
-    //   this.itemsRef.set({name: newName});
-    //   console.log(this.item);
-    //   alert("successfully saved in realtime");
-    // }
-    // updateItem(updateChat: string) {
-    //   this.itemsRef.update({ name: updateChat});
-    //   console.log(this.item);
-    //   alert("successfully updated in realtime");
-    // }
+    saveChat(): void {
+      this._crudService.saveChat;
+    }
 
-    
     sendMessage()
     {
         if (this.messageText.length > 0) {
           this._chatService.sendMessage({user:this.user, room:this.room, message:this.messageText});
           this.messageText='';
-          this._crudService.saveChat;
           console.log(" Sending");
-          
+          // this._crudService.saveChat();
         }
-       
-  
     }
 
     addUser() {
