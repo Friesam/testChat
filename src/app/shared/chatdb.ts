@@ -1,5 +1,5 @@
 export interface Chatdb {
-    id: string;
+    $key: string;
     user: string;
     room: string;
     message: string; 

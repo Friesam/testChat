@@ -12,6 +12,7 @@ import { AppComponent } from "./app.component";
 import { ChatService } from "./chat.service";
 import { WebsocketService } from "./websocket.service";
 import { HttpClientModule } from '@angular/common/http';
+import { CrudService } from './shared/crud.service';
 
 
 
@@ -27,7 +28,8 @@ import { HttpClientModule } from '@angular/common/http';
                 AngularFireAuthModule
             ],
     providers: [ChatService,
-                WebsocketService],
+                WebsocketService,
+                CrudService],
     bootstrap: [AppComponent]
 })
 

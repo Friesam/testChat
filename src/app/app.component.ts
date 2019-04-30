@@ -7,10 +7,10 @@ declare const microlink;
 
 import { ChatService } from './chat.service';
 import { WebsocketService } from './websocket.service';
-//import { CrudService } from './shared/crud.service';
 import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CrudService } from './shared/crud.service';
 
 
 @Component({
@@ -18,7 +18,7 @@ import { map } from 'rxjs/operators';
   templateUrl: './app.component.html',
 
   styleUrls: ['./app.component.css'],
-  providers: [ChatService, WebsocketService]
+  providers: [ChatService, WebsocketService, CrudService]
 
 })
 export class AppComponent implements AfterViewChecked {
@@ -37,17 +37,11 @@ export class AppComponent implements AfterViewChecked {
     giphyResults = [];
     messageArray:Array<{user:String,message:String}> = [];
 
-    itemsRef: AngularFireObject<any>;
-    item:Observable<any[]>;
-    // public items: any = {
-    //   id: "",
-    //   user: "",
-    //   room: "",
-    //   message: "" 
-  
-    // }
+    // itemsRef: AngularFireObject<any>;
+    // item:Observable<any[]>;
+
     
-    constructor(private _chatService:ChatService, db: AngularFireDatabase){
+    constructor(private _chatService:ChatService, private _crudService: CrudService){
         this._chatService.newUserJoined()
         .subscribe(data=> this.messageArray.push(data));
 
@@ -57,8 +51,10 @@ export class AppComponent implements AfterViewChecked {
         this._chatService.newMessageReceived()
         .subscribe(data=>this.messageArray.push(data));
 
-        this.itemsRef = db.object('item');
-        this.item = this.itemsRef.valueChanges();
+        // this._crudService.GetChatsList()
+
+        // this.itemsRef = db.object('item');
+        // this.item = this.itemsRef.valueChanges();
 
         // this.items = this.itemsRef.snapshotChanges().pipe(
         //   map(changes => 
@@ -128,22 +124,24 @@ export class AppComponent implements AfterViewChecked {
     //   alert("successfully saved in realtime");
     // }
 
-    addItem(newName: string){
-      this.itemsRef.set({name: newName});
-      console.log(this.item);
-      alert("successfully saved in realtime");
-    }
-    updateItem(updateChat: string) {
-      this.itemsRef.update({ name: updateChat});
-      console.log(this.item);
-      alert("successfully updated in realtime");
-    }
+    // addItem(newName: string){
+    //   this.itemsRef.set({name: newName});
+    //   console.log(this.item);
+    //   alert("successfully saved in realtime");
+    // }
+    // updateItem(updateChat: string) {
+    //   this.itemsRef.update({ name: updateChat});
+    //   console.log(this.item);
+    //   alert("successfully updated in realtime");
+    // }
 
+    
     sendMessage()
     {
         if (this.messageText.length > 0) {
           this._chatService.sendMessage({user:this.user, room:this.room, message:this.messageText});
           this.messageText='';
+          this._crudService.saveChat;
           console.log(" Sending");
           
         }

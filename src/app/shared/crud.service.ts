@@ -1,57 +1,53 @@
-// import { Injectable } from '@angular/core';
-// import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
-// import { Chatdb } from '../shared/chatdb';
-// import { Observable } from 'rxjs';
-// import { AppComponent } from "../app.component";
-
-// @Injectable({
-//   providedIn: 'root',
-//   // template:`
-//   // <h1>{{ (item | async )?. name }}</h1>
-//   // `,
-// })
-
-// export class CrudService {
-
-//   public items: any = {
-//     id: "",
-//     user: "",
-//     room: "",
-//     message: "" 
-
-//   }
+import { Injectable } from '@angular/core';
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
+import { Chatdb } from '../shared/chatdb';
+import { Observable } from 'rxjs';
+import { AppComponent } from "../app.component";
 
 
-  
+@Injectable({
+  providedIn: 'root',
+
+})
+
+export class CrudService {
 
 
-//   itemRef: AngularFireObject<any>;
-//   item: Observable<Chatdb[]>;
-//   constructor(db: AngularFireDatabase) { 
-//     this.itemRef = db.object('item');
-//     this.item = this.itemRef.valueChanges();
-//   }
+itemsRef: AngularFireList<any>;
+itemRef: AngularFireObject<any>;
 
-//   saveChat(id: string) {
-//     this.items.set({})
-//   }
+  constructor(private db: AngularFireDatabase) { }
 
-//   async updateChat(id: string, message: string ) {
-//     this.items.update({ message: newMessage })
-//   }
+  saveChat(chatdb: Chatdb) {
+    this.itemsRef.push({
+        user:chatdb.user,
+        room: chatdb.room,
+        message: chatdb.message
+    })
+  }
 
-//   getChats(id: string) {
-//     return this.itemRef
-//   }
+  GetChat(chatdb: Chatdb){
+    //   this.itemRef= this.db.object('chats-list/'+ id);
+      return this.itemRef;
+  }
 
+  GetChatsList() {
+      this.itemRef=this.db.object('chats-list');
+      return this.itemsRef;
+  }
 
-//   getChat(id: string) {
-//     return this.items[id] ;
-//   }
+  updateChat(chatdb: Chatdb ) {
+    this.itemRef.update({
+        user: chatdb.user,
+        room: chatdb.room,
+        message: chatdb.message
+    })
+  }
 
-//   //this function will be recreated to delete chat
-//   deleteChat(id : string) {
-//     this.itemRef.remove();
-//   }
+  //this function will be recreated to delete chat
+  deleteChat(chatdb: Chatdb) {
+    // this.itemRef=this.db.object('chats-list/' +id);
+    this.itemRef.remove();
+  }
 
-// }
+}
