@@ -74,7 +74,7 @@
                         type="text"
                         name="message" 
                         [(ngModel)]="messageText" 
-                        (click)="updateChat"
+                        (click)="updateChat()"
                         >
                    
                     <button type="button" 
@@ -87,7 +87,7 @@
                         class="btn btn-success pull-right" 
                         (keyup)="$event.keyCode == sendMessage()" 
                         [disabled]="!messageText"
-                        (click) = "saveChat">
+                        (click) = "saveChat()">
                         Send
                     </button>
                
